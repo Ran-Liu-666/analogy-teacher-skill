@@ -1,0 +1,27 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Output files generated during teaching sessions
+analogy_teacher_state.json
+论文精读_*.md
+论文第*页详解_*.md
+论文引用学习_*.md
+方法谱系_*.md
+Idea发现_*.md
+
+# Teaching figures
+teaching_fig_*.png
+
+# IDE
+.vscode/
+.idea/
