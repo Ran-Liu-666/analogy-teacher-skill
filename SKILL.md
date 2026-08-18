@@ -19,57 +19,13 @@ tags:
   - idea-generation
   - research
 metadata:
-  version: "2.5.0"
-  last_updated: "2026-08-14"
+  version: "2.8.0"
+  last_updated: "2026-08-18"
   status: active
-  changelog: "v2.5: (1) Section 18 changed from red-line self-audit to '论文优点发现' (5-dimension strengths: writing language / modeling / thinking path / idea-generation / problem discovery) — user-requested. Red lines now internal-only quality gate, NOT written into delivered docs. (2) Added research-skill collaboration dispatch (invoke Citation Check / Literature Survey / CCF-SciPilot Figure / Paperspine etc. by paper type). (3) Added self-learning mechanism — after each paper, distill reusable methodology into skill memory. v2.4: Added R17 red line — all math formulas/symbols must be written as inline $...$ LaTeX (No Non-LaTeX Inline Math). User-requested & made permanent 2026-08-14. Formula blocks linearized to single-line $...$; Greek letters/unicode superscripts/operators converted; $$...$$ display math linearized. v2.3: Added mandatory PDF figure rendering protocol (pymupdf 200dpi → PNG → visual inspection). Added R16 red line against describing figures without visual verification. Integrated SciPilot Figure Skill visual checklist + Okabe-Ito colorblind-safe palette."
+  changelog: "v2.8: 科研技能协同调度全面升级 — integrated all 11 research skills (menu #1-11: Academic Research / ArxivDigest / ChatGPT Academic Writing / Citation Check / Literature Reviewer / Literature Survey / Nature Skills / PaperPilot / Paperskill / Paperspine / PubMed PaperQA2) into Analogy Teacher via dual-dimension dispatch (workflow stage + paper type), each skill mapped to a role and an output section; rule: one most-fitting skill per stage, degradation to internal knowledge on failure. v2.7: Integrated vision-skill (Zhipu GLM-4.6V visual bridge) into figure reading — when the main model is text-only (DeepSeek etc., cannot Read images), Step R3 visual verification routes to vision_describe.py instead of the Read tool; markers [VISUALLY CONFIRMED via vision-skill]. v2.6: 全量解读强制 — every formula and every figure/table in the paper must be fully interpreted, no cherry-picking (user-requested 2026-08-18). v2.5: (1) Section 18 changed from red-line self-audit to '论文优点发现' (5-dimension strengths: writing language / modeling / thinking path / idea-generation / problem discovery) — user-requested. Red lines now internal-only quality gate, NOT written into delivered docs. (2) Added research-skill collaboration dispatch (invoke Citation Check / Literature Survey / CCF-SciPilot Figure / Paperspine etc. by paper type). (3) Added self-learning mechanism — after each paper, distill reusable methodology into skill memory. v2.4: Added R17 red line — all math formulas/symbols must be written as inline $...$ LaTeX (No Non-LaTeX Inline Math). User-requested & made permanent 2026-08-14. Formula blocks linearized to single-line $...$; Greek letters/unicode superscripts/operators converted; $$...$$ display math linearized. v2.3: Added mandatory PDF figure rendering protocol (pymupdf 200dpi → PNG → visual inspection). Added R16 red line against describing figures without visual verification. Integrated SciPilot Figure Skill visual checklist + Okabe-Ito colorblind-safe palette."
 ---
 
-# Analogy Teacher v2.5 — 论文精读教学法
-
-## ⚠️ 强制行为：记忆持久化询问（MANDATORY）
-
-每次触发本 skill 时，必须在两个时间点各询问用户一次是否保存为持久记忆。
-
-### 第一次询问：体验之前（技能触发后、开始产出内容前）
-
-在确认用户意图、准备开始解读之前，**必须先发问**：
-
-> 在我开始之前——你希望我把 **Analogy Teacher 这个 skill 本身保存为电脑上的持久记忆**吗？保存后，以后每次新对话你不需要重新部署或重新学习这个 skill，我会自动记得它的全部解读规范和类比库。本次解读无论你是否保存，我都会照常进行。
-
-给用户两个选项：
-- **是，保存为记忆** — 我会写入 `C:\Users\Ran Liu\.claude\projects\D----\memory\` 并在 MEMORY.md 建立索引
-- **暂不保存，先看效果** — 照常解读，结束后我会再问一次
-
-### 第二次询问：体验之后（完整教学文档输出完毕、用户确认满意后）
-
-在用户对解读结果表示认可后（或解读完毕自然结束时），**必须再问一次**：
-
-> 你已经体验了 Analogy Teacher 的完整解读效果。要我现在把它保存为持久记忆吗？保存后，以后每次新对话你说"讲懂我""打个比方""精读这篇论文"时，我会自动以同样的深度和质量来解读，不需要重新部署 skill。
-
-给用户两个选项：
-- **是，现在保存** — 立即写入记忆系统
-- **不需要** — 仅本次对话有效，不持久化
-
-### 询问格式要求
-
-- 两次询问必须是**独立的消息**，不能混在教学内容中
-- 每次询问必须给出两个明确可选的选项
-- 第一次询问必须声明"无论是否保存，本次解读照常进行"（消除用户的选择压力）
-- 第二次询问必须在用户对结果满意之后再问，不要在用户还没看完时就问
-
-### 记忆保存方式
-
-用户同意后，写入以下两个文件：
-
-1. **记忆文件**：`C:\Users\Ran Liu\.claude\projects\D----\memory\analogy-teacher-skill.md`
-   - `name: analogy-teacher-skill`
-   - `description: 生活化类比教学法 — 四层递进解释框架 + 20+概念类比库 + 5个类比设计原则 + 页面精读方法论 + 22项质量自检清单`
-   - `metadata.type: project`
-   - 正文：简述本 skill 的全部核心能力
-
-2. **索引文件**：在 `MEMORY.md` 的 `Teaching & Explanation` 分类下新增一行
-   - `- [Analogy Teacher Skill](analogy-teacher-skill.md) — 生活化类比论文精读教学法`
+# Analogy Teacher v2.8 — 论文精读教学法
 
 ---
 
@@ -93,6 +49,16 @@ metadata:
 
 ---
 
+## 🔴 全量解读强制（v2.6 新增 — 永久机制）
+
+**公式、图表、图片一律全部解读，绝不只挑几个。** 用户 2026-08-18 明确要求。
+- **公式**：论文中出现的**每一个**公式（含推导中间式、符号定义式、指标公式）都必须完整解读——逐符号表 + 人话翻译 + 手算例子 + 常见误区，四层展开，不挑选、不跳过
+- **图表/图片**：论文中**每一张**图、表、示意图/流程图/照片都必须解读——渲染 → 视觉确认 → 三层读图 + 6项易错检查 + 图→声明连线，逐张完成
+- 判定标准：论文里有多少公式/图/表，交付文档就要有多少个对应解读小节；**数量对不上 = 内部自检违规**，禁止交付
+- 触发场景：全论文精读、单页精读、Quick Teach 均适用（Quick Teach 可简化每条的展开深度，但覆盖数量不减）
+
+---
+
 ## ⚡ MANDATORY GATE：学习者水平评估（每次触发必须执行）
 
 > **"对小学生和对博士生讲同一篇论文，用同一套话，是对两者的不尊重。"**
@@ -101,7 +67,7 @@ metadata:
 
 ### 评估时机
 
-在记忆持久化询问之后、Pass 1 开始之前执行。如果用户在第一句话中就明确表达了水平（如"我完全零基础""我做过这方面研究"），可以跳过提问直接分类。
+在技能触发后、Pass 1 开始之前执行。如果用户在第一句话中就明确表达了水平（如"我完全零基础""我做过这方面研究"），可以跳过提问直接分类。
 
 ### 四种学习者水平
 
@@ -357,9 +323,9 @@ Pass 1（结构提取）未完成前，绝不开 Pass 2（教学）。
 绝不允许静默输出摘要并称之为教学文档。
 **测试**：如果单页教学请求输出 < 200 行，验证是否存在 MATERIAL GAP 标记。
 
-### R16: No Figure Description Without Visual Verification（无视觉验证不描述图表）🔴 v2.3 新增
-在描述任何 PDF 中的图表之前，必须先使用 pymupdf (fitz) 将图表所在页面渲染为 200dpi PNG，然后通过 Read 工具实际查看渲染图片。禁止在未看到渲染图片的情况下声称图表的类型、坐标轴含义、数据趋势或具体数值。
-**测试**：每个图表的读图卡中是否出现 [VISUALLY CONFIRMED] 或 [RENDER FAILED — using text fallback] 标记？
+### R16: No Figure Description Without Visual Verification（无视觉验证不描述图表）🔴 v2.3 新增 · v2.7 适配纯文本模型
+在描述任何 PDF 中的图表之前，必须先使用 pymupdf (fitz) 将图表所在页面渲染为 200dpi PNG，然后进行视觉验证：**主模型有视觉（Claude/GPT-4o 等）→ 用 Read 工具查看渲染图片；主模型为纯文本（DeepSeek 等，Read 图返回 [Unsupported Image]）→ 改用 vision-skill 视觉桥接**（v2.7 新增，见第六部分 6.0.1 Step R3）。禁止在未获得视觉验证（Read 实际查看 或 vision-skill 结构化描述）的情况下声称图表的类型、坐标轴含义、数据趋势或具体数值。
+**测试**：每个图表的读图卡中是否出现 [VISUALLY CONFIRMED] 或 [VISUALLY CONFIRMED via vision-skill] 或 [RENDER FAILED — using text fallback] 标记？
 
 ### R17: No Non-LaTeX Inline Math（公式必转 $...$ 内联 LaTeX）🔴 v2.4 新增
 教学文档中的**所有数学公式和数学符号**必须以 `$...$` 内联 LaTeX 形式输出。禁止把公式写成纯文本或 Unicode 数学写法（如 `g₀/(...)²`、`γ^c`、`10⁻²⁸` 裸奔在正文里）。用户明确要求此格式（2026-08-14 固化）。
@@ -706,13 +672,20 @@ Step R2: 使用 pymupdf (fitz) 渲染该页为 PNG
   → 默认 DPI: 200（足够看清图表细节和文字标注）
   → 输出目录: {工作目录}/matc_figures/page_{N}.png
 
-Step R3: 打开渲染后的 PNG 进行视觉检查
-  → 使用 Read 工具读取图片
+Step R3: 打开渲染后的 PNG 进行视觉检查（按主模型视觉能力二选一）🔴 v2.7
+  → 路径A（主模型有视觉: Claude/GPT-4o 等）: 使用 Read 工具读取图片，直接查看图表关键元素
+  → 路径B（主模型纯文本: DeepSeek 等，Read 图返回 [Unsupported Image]）: 调用 vision-skill 视觉桥接
+      python ~/.claude/skills/vision-skill/scripts/vision_describe.py "OUT.png" \
+        --prompt "识别图表类型；X/Y轴标签与单位；数据系列数量与图例对应；数值范围；趋势方向与拐点；Y轴起点是否非0；是否仅用颜色区分系列"
+      → ZHIPU_API_KEY / VISION_MODEL=glm-4.6v 已配在 ~/.claude/settings.json，新会话启动自动加载
+      → 若 key 未注入当前会话（如旧会话），先 export ZHIPU_API_KEY="..." 再运行
+      → 基于返回的结构化 7 段描述确认图表类型/坐标轴/系列/图例/数值/趋势（对照 6.0.2 清单逐项核对）
   → 确认能看到图表中的所有关键元素
 
 Step R4: 记录观察结果
-  → 在图表描述中标注 [VISUALLY CONFIRMED]
-  → 如渲染失败（扫描PDF/图片PDF），标注 [RENDER FAILED — using text fallback]
+  → 基于 Read 工具实际查看: 标注 [VISUALLY CONFIRMED]
+  → 基于 vision-skill 结构化描述: 标注 [VISUALLY CONFIRMED via vision-skill]（v2.7）
+  → 如渲染失败（扫描PDF/图片PDF）: 标注 [RENDER FAILED — using text fallback]，只能引用论文正文文字并标 [TEXT-ONLY]
 ```
 
 #### 6.0.2 视觉检查清单（继承自 SciPilot Figure Skill）
@@ -729,6 +702,8 @@ Step R4: 记录观察结果
 | 6 | **趋势方向** | 线条是上升、下降还是波动？拐点在哪里？ | 说"持续上升"但实际是先升后降 ❌ |
 | 7 | **色盲安全检查** | 图的配色是否只用颜色区分数据系列？（如果是，标注 [COLOR-ONLY] 警告） | 忽略红绿色盲无法区分的配色 ❌ |
 | 8 | **Y轴起点** | Y轴是否从0开始？如果不是，差异可能被放大 | 未检查Y轴截断而过度解读差异 ❌ |
+
+> 🔴 **v2.7 说明（纯文本模型用 vision-skill 时）**：以上 8 项逐项基于 `vision_describe.py` 返回的结构化描述回答——**每一项都必须能在描述里找到依据**；描述没提的项（如色盲安全、Y轴起点），需针对该图追加针对性 `--prompt` 重新查询，绝不自行推断。图例对应（第4项）如描述未明确谁对应哪条线，补问一次。
 
 #### 6.0.3 反欺骗规则（Anti-Fabrication Rules）
 
@@ -761,12 +736,12 @@ Step R4: 记录观察结果
 
 ```
 对于: Fig.N — [标题]     [F###]
-      [VISUALLY CONFIRMED] 或 [RENDER FAILED — using text fallback]
+      [VISUALLY CONFIRMED]（Read 查看）或 [VISUALLY CONFIRMED via vision-skill] 或 [RENDER FAILED — using text fallback]
 
 Step 1: 实验设置还原
   "作者做了什么实验？"（一句话描述）+ [B###]
 
-Step 2: 坐标轴含义 [VISUALLY CONFIRMED — 从渲染图片中直接读取]
+Step 2: 坐标轴含义 [VISUALLY CONFIRMED — 从渲染图片直接读取 / via vision-skill 描述]
   X轴 = [实际看到的标签] / Y轴 = [实际看到的标签和单位]
   不同曲线 = [从图例确认的数据系列]
 
@@ -1560,21 +1535,69 @@ Step 4: 最终合成势场
 
 ---
 
-## 科研技能协同调度 🔴 v2.5 新增
+## 科研技能协同调度 🔴 v2.8 全面升级（原 v2.5）
 
-> 用户需求（2026-08-14）：从 skill 菜单调用科研相关 skill，用于支撑论文精读与优点发现。
+> 用户需求（2026-08-14 v2.5）：从 skill 菜单调用科研 skill 支撑精读与优点发现。
+> 用户需求（2026-08-18 v2.8）：**把菜单 1-11 号全部 11 个科研 skill 融进 Analogy Teacher**。
 
-精读论文时，按论文类型**按需调用**科研相关 skill，把它们的产出融入精读与第18节优点发现。调度规则：
+精读论文时，按**工作流阶段** + **论文类型**双维度调度 1-11 号 skill，把它们的产出融入精读的指定环节。规则：**同一环节只选 1 个最贴切的 skill**，不堆叠；调用失败降级为内部知识，不阻塞精读。
 
-| 论文类型 | 联动科研 skill | 融入点 |
-|---------|--------------|--------|
-| 任何论文 | **#4 Citation Check**（引用校验） | 第13节方法谱系、第18节写作语言（引用组织是否规范） |
-| review 综述 | **#6 Literature Survey / #5 Literature Reviewer** | 分类法构建、纳入标准、第18节建模/问题发现 |
-| methods 方法 | **#44 CCF Figure / #46 SciPilot Figure** | 第9节图表精读、第18节建模（图怎么设计才说服人） |
-| discovery 发现 | **#46 SciPilot Figure**（数据可视化） | 第9节、第10节实验呈现 |
-| 需要写作改进时 | **#10 Paperspine / #3 ChatGPT Academic Writing** | 第18节写作语言（对比优秀写法） |
+### 调度总表（11 个科研 skill 一览）
 
-**执行方式**：Pass 1 分类论文类型后，识别对应 skill → 在 Pass 2 中把该 skill 的专业产出（引用审计、图表设计点评、写作点评）融入第 9/13/18 节。若对应 skill 在环境不可用，标注 `[SKILL UNAVAILABLE — 以内部知识代替]`，不阻塞精读。
+| # | skill | 类型 | 在精读中的角色 | 调用时机 | 产出融入 |
+|:---:|------|------|--------------|---------|---------|
+| 1 | **Academic Research**（13-agent 研究/写作/审查管线） | Skill | **Idea 落地引擎**：把第19节的 Idea 推进为完整研究流程 | 精读后，用户要推进 Idea 时 | 第19节 Idea → 研究计划/初稿/审查 |
+| 2 | **ArxivDigest**（arXiv 每日摘要+兴趣排序） | GitHub Action/CLI | **前沿雷达**：订阅该论文方向，追踪后续进展 | 精读后 / 用户追新论文时 | 第17节下一站、第19节 Idea 时效性核验 |
+| 3 | **ChatGPT Academic Writing**（学术写作提示词库） | Prompt 库 | **写作语言智库**：拆解优秀写法的 prompts 技法 | 第18节写作语言维度 | 第18节写作语言点评 |
+| 4 | **Citation Check**（视觉2-pass引用校验） | Skill | **引用审计员**：核验参考文献真实存在 + 声明一致性 | Pass 2 第13节 + 第18节 | 第13节方法谱系、第18节写作语言 |
+| 5 | **Literature Reviewer**（8阶段系统综述+浏览器自动化） | Skill | **谱系定位器**：把论文放进领域文献地图 | Pass 1 前 / 用户要综述时 | 第3节前置洞察、第17节背景 |
+| 6 | **Literature Survey**（5模式PhD文献调研） | Skill | **Gap 探测器**：识别研究空白、相关work定位 | 找Idea 阶段 | 第19节 Idea 源追溯 |
+| 7 | **Nature Skills**（18个科学技能合集） | Skill 合集 | **精读工具箱**：paper-card(精读)/figure(图表)/citation(引用)/writing(写作)/statistics(统计) 等 | 按需 | 第9/13/18节 |
+| 8 | **PaperPilot**（CLI研究代理，11+免费源） | CLI 工具 | **证据补全器**：交叉检索源文献、双语报告 | Pass 1 证据清单不完整时 | Pass 1 证据清单补全 |
+| 9 | **Paperskill**（本科毕设论文7阶段） | Skill | **毕设对接器**：本科毕设/系统设计类论文精读 | 用户是本科毕设场景 | 全文精读 + 第18节 |
+| 10 | **Paperspine**（贡献优先12阶段写作） | Skill | **写作引擎**：精读经验 → 论文写作 | 精读后写作时 | 第18节优点 → 论文初稿 |
+| 11 | **PubMed PaperQA2**（PubMed+PaperQA2 管线） | CLI 工具 | **医学生命科学证据链**：背景补全 + 引用核实 | 医学/生物论文精读时 | Pass 1 背景、第13节谱系 |
+
+### 按工作流阶段调度
+
+```
+Pass 1（提取阶段）—— 建背景、补证据
+  ├── 用户要综述/需要领域定位 → #5 Literature Reviewer / #6 Literature Survey
+  ├── 医学/生物论文 → #11 PubMed PaperQA2（背景补全、源文献核实）
+  ├── 证据清单不完整 → #8 PaperPilot（交叉检索补全）
+  └── 用户要追踪该方向 → #2 ArxivDigest（订阅前沿，可选）
+
+Pass 2（教学阶段）—— 锚定证据、提升讲解质量
+  ├── 任何论文 → #4 Citation Check（第13节方法谱系 + 第18节写作语言：引用真实性）
+  ├── 图表精读/图怎么设计 → #7 nature-figure / nature-paper-card（交叉参考）
+  ├── 第18节写作语言 → #3 ChatGPT Academic Writing（prompts 技法拆解）
+  └── 本科毕设/系统设计类 → #9 Paperskill
+
+后处理（Idea + 写作）—— 让精读产出价值
+  ├── 找Idea → #6 Literature Survey（Gap识别）→ 喂给第19节 4 道品质关卡
+  ├── 推进 Idea → #1 Academic Research（研究→写作→审查全管线）
+  ├── 写论文 → #10 Paperspine（第18节优点转化为论文初稿）
+  └── 追踪后续 → #2 ArxivDigest
+```
+
+### 按论文类型调度（7 类主类型）
+
+| 论文类型 | 优先联动 | 次选联动 |
+|---------|---------|---------|
+| methods 方法 | #7 nature-figure（图说服力）、#4 Citation Check | #6、#10 |
+| discovery 发现 | #4、#6 | #11（生命科学）、#2 |
+| resource 资源/数据集 | #5、#6（基准公平性） | #4 |
+| clinical 临床 | #11、#4 | #5 |
+| materials 材料 | #7 nature-statistics | #4 |
+| review 综述 | #5、#6（分类法/纳入标准） | #4、#3 |
+| conceptual 概念 | #6、#3 | #4 |
+
+### 执行方式与降级规则
+
+1. **Skill 型**（1/4/5/6/7/9/10）→ 通过 Skill 工具直接调用；**CLI 型**（2/8/11）→ 用 Bash 运行其 app/脚本（PaperPilot 用 `python app.py`、PubMed 用 `pubmed-paperqa2`、ArxivDigest 用其 GitHub Action 工作流）
+2. 把该 skill 的专业产出（引用审计、综述分类法、图表设计点评、写作点评、文献谱系）**融入指定节**，不替代原节内容
+3. 对应 skill 在环境不可用 → 标注 `[SKILL UNAVAILABLE — 以内部知识代替]`，**不阻塞精读**
+4. 严禁为凑联动而调用——用户没提综述需求就不调 #5/#6，Idea 不成熟就不调 #1
 
 ---
 
@@ -1584,12 +1607,12 @@ Step 4: 最终合成势场
 
 每完成一篇论文精读，把从第18节优点中发现的可复用方法论**沉淀进 skill 记忆文件**：
 
-1. **写入位置**：`C:\Users\Ran Liu\.claude\projects\D----\memory\analogy-teacher-skill.md` 新增「📚 方法论沉淀」区（累积式，一篇一条）。
+1. **写入位置**：`~/.claude/projects/<项目目录哈希>/memory/analogy-teacher-skill.md`（Claude Code 持久记忆目录，随工作目录而定）新增「📚 方法论沉淀」区（累积式，一篇一条）。
 2. **每条记录格式**：
    ```
    - [<日期>] <论文简称> → <从这篇学到的一条可复用方法>（维度：写作/建模/思考/Idea/问题发现）
    ```
-3. **什么时候写**：每篇精读交付后、用户确认满意时，随记忆持久化询问一起执行。
+3. **什么时候写**：每篇精读交付后、用户确认满意时执行。
 4. **什么时候复用**：后续精读遇到相似问题/论文类型时，先查记忆中的方法论沉淀，把之前学到的方法应用到新的解读里。
 5. **沉淀库可反向升级 skill**：如果某条方法论被多次应用且效果好，把它升格为 skill 的正式协议（写进 SKILL.md）。
 
@@ -2223,4 +2246,4 @@ Gate 4 — Non-Invention（非发明）:
 
 用户同意保存记忆时，description 更新为：
 
-> 论文精读+引用学习+Idea发现 三位一体研究技能。v2.5新增：第18节改为「论文优点发现」（写作语言/建模/思考路径/Idea过程/问题发现五维）+ 红线改为内部质量门不写入交付文档 + 科研技能协同调度（按论文类型联动引文检查/文献综述/科学图表/学术写作）+ 自我学习机制（每篇精读后方法论沉淀进skill记忆）。v2.4新增：R17红线——所有数学公式/符号必须输出为 $...$ 内联LaTeX（公式代码块压单行、希腊字母/上下标/运算符转LaTeX、$$线性化、符号表逐token包裹）。v2.3新增：强制PDF图表渲染协议（pymupdf 200dpi→视觉检查）+R16红线。v2.2新增：学习者水平评估（4级自适应教学——零基础/初学者/进阶者/研究者）。v2.1新增：图表精读协议（三层读图法+6项易错检查+声明-证据链路）+ 教学作图协议（Python数据图+Mermaid流程图+概念分解图+对比可视化+色盲安全配色）。v2.0: Two-Pass架构 + 17条红线自审 + 7种论文类型自适应 + WYSIATI认知校准 + 证据先行 + 术语账本 + 洞察依赖图 + 19节固定输出模式 + 4道Idea品质关卡。精读：四层递进+八个协议+28项自检。引文学习：7级证据层级+参考文献分类+基石文献追踪+方法谱系图。Idea引擎：7种策略系统化生成可发表的研究方向。
+> 论文精读+引用学习+Idea发现 三位一体研究技能。v2.8新增：科研技能协同调度全面升级——把菜单 1-11 号全部 11 个科研 skill（Academic Research / ArxivDigest / ChatGPT Academic Writing / Citation Check / Literature Reviewer / Literature Survey / Nature Skills / PaperPilot / Paperskill / Paperspine / PubMed PaperQA2）融入精读，按工作流阶段+论文类型双维度调度，每个 skill 有专属角色与产出融入点。v2.7新增：vision-skill 视觉桥接——主模型为纯文本（DeepSeek等）时，图表视觉验证从 Read 工具改走 vision-skill（智谱 GLM-4.6V 结构化描述），标注 [VISUALLY CONFIRMED via vision-skill]。v2.6新增：全量解读强制——公式/图表/图片一律全部解读不挑选（用户 2026-08-18 要求）。v2.5新增：第18节改为「论文优点发现」（写作语言/建模/思考路径/Idea过程/问题发现五维）+ 红线改为内部质量门不写入交付文档 + 科研技能协同调度（按论文类型联动引文检查/文献综述/科学图表/学术写作）+ 自我学习机制（每篇精读后方法论沉淀进skill记忆）。v2.4新增：R17红线——所有数学公式/符号必须输出为 $...$ 内联LaTeX（公式代码块压单行、希腊字母/上下标/运算符转LaTeX、$$线性化、符号表逐token包裹）。v2.3新增：强制PDF图表渲染协议（pymupdf 200dpi→视觉检查）+R16红线。v2.2新增：学习者水平评估（4级自适应教学——零基础/初学者/进阶者/研究者）。v2.1新增：图表精读协议（三层读图法+6项易错检查+声明-证据链路）+ 教学作图协议（Python数据图+Mermaid流程图+概念分解图+对比可视化+色盲安全配色）。v2.0: Two-Pass架构 + 17条红线自审 + 7种论文类型自适应 + WYSIATI认知校准 + 证据先行 + 术语账本 + 洞察依赖图 + 19节固定输出模式 + 4道Idea品质关卡。精读：四层递进+八个协议+28项自检。引文学习：7级证据层级+参考文献分类+基石文献追踪+方法谱系图。Idea引擎：7种策略系统化生成可发表的研究方向。

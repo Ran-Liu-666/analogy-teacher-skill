@@ -1,7 +1,8 @@
 # Analogy Teacher — 论文精读 + 引文学习 + Idea 发现
 
-[![Version](https://img.shields.io/badge/version-2.5.0-blue)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.8.0-blue)](SKILL.md)
 [![Platform](https://img.shields.io/badge/platform-Claude%20Code-orange)](https://claude.ai/code)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > **"如果你不能用生活例子解释一个概念，你就没有真正理解它。"**
 
@@ -17,10 +18,11 @@ Analogy Teacher 是一个 Claude Code 技能，将任意论文的任意页面转
 - **🔴 17 条红线内部自审**：可测试的质量门（R1-R17），防止错误产出；红线为**内部执行**，不写入交付文档
 - **7 种论文类型自适应**：methods / discovery / resource / clinical / materials / review / conceptual
 - **WYSIATI 认知校准**：基于 Kahneman 双过程理论，防止"所见即全部"偏差
-- **🔴 强制图表渲染协议（v2.3）**：pymupdf 200dpi 渲染 → 视觉检查 → [VISUALLY CONFIRMED] 标注，绝不盲猜图表
+- **🔴 全量解读强制（v2.6）**：公式、图表、图片**全部**解读，一个不挑——论文有多少公式/图表，交付文档就有多少对应解读小节
+- **🔴 图表视觉验证（v2.3/v2.7）**：pymupdf 200dpi 渲染 → 视觉模型确认 → `[VISUALLY CONFIRMED]` 标注；纯文本模型（DeepSeek 等）自动走 vision-skill 视觉桥接，绝不盲猜图表
 - **🔴 强制公式内联化（v2.4）**：所有公式/符号输出为 `$...$` 内联 LaTeX（R17 红线）
 - **🔴 论文优点发现（v2.5）**：第18节五维亮点——写作语言 / 建模 / 思考路径 / Idea生成过程 / 问题发现
-- **🔴 科研技能协同调度（v2.5）**：按论文类型联动引文检查 / 文献综述 / 科学图表 / 学术写作等 skill
+- **🔴 科研技能协同调度（v2.8）**：按**工作流阶段 × 论文类型**双维度调度 11 个科研 skill（学术研究/arXiv日报/写作智库/引用审计/文献综述/Gap探测/科学图表/证据补全/毕设对接/写作引擎/医学证据链）
 - **🔴 自我学习机制（v2.5）**：每篇精读后把可复用方法论沉淀进 skill 记忆，越用越聪明
 
 ### 🔗 引文学习（Reference Mining）
@@ -41,15 +43,31 @@ Analogy Teacher 是一个 Claude Code 技能，将任意论文的任意页面转
 ### 安装
 
 ```bash
-# 安装依赖（v2.3 图表渲染需要）
-pip install pymupdf
-
-# 创建 skills 目录（如果不存在）
+# 1. 创建 skills 目录（如果不存在）
 mkdir -p ~/.claude/skills
 
-# 克隆本仓库（替换为你的仓库地址）
+# 2. 克隆本仓库（替换为你的仓库地址）
 git clone https://github.com/YOUR_USERNAME/analogy-teacher.git ~/.claude/skills/analogy-teacher
+
+# 3. 安装核心依赖（v2.3 起，PDF 图表渲染需要）
+pip install pymupdf
 ```
+
+### （可选）让纯文本模型也能看图 — vision-skill
+
+如果你使用的模型**不能直接读图片**（如 DeepSeek 等纯文本模型），Analogy Teacher v2.7+ 会自动调用 [vision-skill](https://github.com/LearningByDoingNow/vision-skill) 把图表交给视觉模型转成文字描述，再回来精读：
+
+```bash
+# 1. 安装 vision-skill 与依赖
+git clone https://github.com/LearningByDoingNow/vision-skill.git ~/.claude/skills/vision-skill
+pip install zai-sdk Pillow requests
+
+# 2. 配置视觉模型 API Key（示例为智谱 GLM-4.6V，中国直连有免费额度）
+#    写入 ~/.claude/settings.json：
+#    { "env": { "ZHIPU_API_KEY": "你的key", "VISION_MODEL": "glm-4.6v" } }
+```
+
+配置后，图表精读自动升级为：**pymupdf 渲染 PDF 页 → vision-skill 视觉确认 → `[VISUALLY CONFIRMED via vision-skill]` 标注**。有视觉能力的模型（Claude/GPT-4o）无需此步，直接用 Read 工具看图。
 
 ### 触发
 
@@ -61,40 +79,42 @@ git clone https://github.com/YOUR_USERNAME/analogy-teacher.git ~/.claude/skills/
 | 学习引用论文 | `学习引用论文` `追踪方法谱系` `这个方法从哪里来的` |
 | 找研究 Idea | `找Idea` `有什么可做的` `研究空白` `未来方向` |
 
-首次触发时，技能会先询问你的知识水平（🌱零基础 / 🌿初学者 / 🌳进阶者 / 🎓研究者），然后根据你的水平自适应调整教学深度。
+首次触发时，技能会先询问你的知识水平（🌱零基础 / 🌿初学者 / 🌳进阶者 / 🎓研究者）与阅读目标，然后根据你的水平自适应调整教学深度。
 
 ---
 
-## 🏗️ 架构总览（v2.5）
+## 🏗️ 架构总览（v2.8）
 
 ```
-Gate 0: 学习者水平评估 → 4级自适应教学
+Gate 0: 学习者水平评估 + 读者原型 → 4级自适应教学
     ↓
 Pass 1: 结构提取（只读）
     ├── 论文类型分类（7种原型）
     ├── 术语账本构建
-    ├── 证据清单 + 声明-证据矩阵
-    ├── 科研技能协同调度（按类型联动引文检查/文献综述/科学图表）
-    └── 块ID锚定 [B###][E###][F###]
+    ├── 证据清单 + 声明-证据矩阵 + 块ID锚定 [B###][E###][F###]
+    └── 科研技能协同调度（工作流阶段 × 论文类型 → 11 skill 路由）
     ↓
 [Gate: 用户确认]
     ↓
 Pass 2: 教学写作
-    ├── 🔴 强制图表渲染（pymupdf 200dpi → 视觉检查）
-    ├── 🔴 强制公式内联化（$...$ LaTeX）
-    ├── 类型特定的教学模板
-    ├── 四层递进 + 八个协议
+    ├── 🔴 全量解读（v2.6）：每个公式/图表/图片都解读，不挑选
+    ├── 🔴 图表视觉验证：pymupdf 渲染 → 视觉确认（纯文本模型走 vision-skill）
+    ├── 🔴 公式内联化（$...$ LaTeX）
+    ├── 类型特定的教学模板 + 四层递进 + 八个协议
     ├── WYSIATI 认知校准检查点
     ├── 17条红线内部自审（不写入交付文档）
     └── 第18节 论文优点发现（五维）+ 第19节 Idea
     ↓
-输出: 19节固定教学卡片 → 保存到桌面
+输出: 19节固定教学卡片 → 保存到工作目录
      ↓
 自我学习: 可复用方法论沉淀进 skill 记忆
 ```
 
 | 版本 | 行数 | 核心新增 |
 |------|:---:|------|
+| v2.8 | 2,249 | 🔴 科研技能协同调度全面升级：工作流阶段 × 论文类型 双维度调度 11 个科研 skill |
+| v2.7 | 2,240 | 🔴 vision-skill 集成：纯文本模型看图（GLM-4.6V 视觉桥接 + `[VISUALLY CONFIRMED via vision-skill]` 标注） |
+| v2.6 | 2,230 | 🔴 全量解读强制：公式/图表/图片全部解读，一个不挑（数量对不上即违规） |
 | v2.5 | 2,226 | 🔴 第18节改为论文优点发现(五维) + 红线内移不写入交付文档 + 科研技能协同调度 + 自我学习机制 |
 | v2.4 | 2,164 | 🔴 强制公式内联化(R17红线：所有公式/符号输出为 `$...$` 内联LaTeX) |
 | v2.3 | 2,148 | 🔴 强制PDF图表渲染协议 + R16红线 + SciPilot视觉检查清单 |
@@ -108,8 +128,10 @@ Pass 2: 教学写作
 
 ```
 analogy-teacher/
-├── SKILL.md              # 主技能文件（2,226行）— Claude Code 自动加载
+├── SKILL.md              # 主技能文件（2,249行）— Claude Code 自动加载
 ├── README.md             # 本文件
+├── LICENSE               # MIT 许可
+├── .gitignore            # 忽略生成产物（状态文件/教学输出/临时图）
 └── examples/             # 示例输出
     └── EXAMPLE.md        # 一页论文的完整教学输出示例
 ```
@@ -128,13 +150,14 @@ analogy-teacher/
 
 ## 📄 许可
 
-本技能基于 Claude Code Skill 开放标准构建。源代码以 MIT 许可发布。
+本技能基于 Claude Code Skill 开放标准构建。源代码以 [MIT 许可](LICENSE) 发布。
 
 ---
 
 ## 🙏 致谢
 
 本技能的设计借鉴了以下 Claude Code 技能生态中的最佳实践：
+- **vision-skill**（LearningByDoingNow）— 多厂商视觉桥接，让纯文本模型看图
 - **nature-reader** — 术语账本、源锚定架构
 - **nature-reviewer** — 15 条红线、洞察 ID 系统
 - **nature-paper-card** — 16 节固定卡片模式（启发 19 节输出）
